@@ -1,0 +1,24 @@
+---
+- hosts: centos7
+  become: true
+
+  tasks:
+  - name: "Install libselinux-python"
+    yum: name={{items}} state=present
+    with_items:
+    - libselinux-python
+    - httpd
+    - curl
+
+  - name: "Disable SE Linux"
+    selinux: state=disabled
+
+  - name: "Make sure the apache has started "
+    service: name=httpd state=started enabled=yes
+
+  - name: "Enable tcp 80 port open in firewall"
+    firewalld: port="80/tcp" permanent=yes state=enabled
+
+  - name: "Restart the firewalld service"
+    service: name=firewalld state=restarted
+
