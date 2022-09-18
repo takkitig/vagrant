@@ -1,6 +1,12 @@
 ---
 - hosts: "centos7"
   become: "true"
+
+  vars:
+  -  USERNAME: GANESH
+  -  SERVICENAME: "Apache-HTTPD From CenOS7"
+  -  SERVERVERSION: "Apache HTTPD 2.0.8 on CenOS 7"
+
   tasks:
   - name: "Install libselinux-python"
     yum: name=libselinux-python state=present
@@ -30,4 +36,12 @@
   - debug: var=curl_output.stdout_lines
 
   - name: "Copy a sample html file to httpd web server location"
-    copy: src=index.html dest=/var/www/html/index.html
+    template: src=index.html dest=/var/www/html/index.html
+
+  - name: "Create a file and update the user and file permissions"
+    file: path=/var/www/html/login.html state=touch owner=vagrant group=vagrant mode=0775
+    notify: Restart httpd
+  
+  handlers:
+  - name: Restart httpd 
+    service: name=httpd state=restarted
