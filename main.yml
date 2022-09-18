@@ -8,33 +8,6 @@
   -  SERVERVERSION: "Apache HTTPD 2.0.8 on CenOS 7"
 
   tasks:
-  - name: "Install libselinux-python"
-    yum: name=libselinux-python state=present
-
-  - name: "Disable SE Linux"
-    selinux: state=disabled
-
-  - name: "Install apache http"
-    yum: name=httpd state=present
-
-  - name: "Make sure the apache has started "
-    service: name=httpd state=started enabled=yes
-
-  - name: "Enable tcp 80 port open in firewall"
-    firewalld: port="80/tcp" permanent=yes state=enabled
-
-  - name: "Restart the firewalld service"
-    service: name=firewalld state=restarted
-
-  - name: "Install curl command"
-    yum: name=curl state=present
-
-  - name: "Check if the curl command is working or not"
-    shell: curl ipinfo.io/ip
-    register: curl_output
-  
-  - debug: var=curl_output.stdout_lines
-
   - name: "Copy a sample html file to httpd web server location"
     template: src=index.html dest=/var/www/html/index.html
 
